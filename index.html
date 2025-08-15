@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Visualisateur d'Algorithmes de Tri</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script>
+		tailwind.config = {
+			theme: {
+				extend: {
+					colors: {
+						'primary': '#4CAF50',
+						'secondary': '#2196F3',
+						'accent': '#FF9800',
+						'danger': '#F44336',
+						'success': '#8BC34A',
+						'comparing': '#FF5722',
+						'swapping': '#E91E63',
+						'sorted': '#4CAF50',
+						'pivot': '#FFC107'
+					}
+				}
+			}
+		}
+	</script>
+	<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-gray-100 font-sans h-screen overflow-hidden">
+	<div class="w-full h-full flex flex-col p-1">
+		<!-- En-tête avec contrôles -->
+		<header class="bg-white rounded-lg p-2 mb-2 shadow-lg flex justify-between items-center flex-wrap gap-2">
+			<h1 class="text-primary text-xl font-bold">🔄 Visualisateur d'Algorithmes de Tri</h1>
+			<div class="flex items-center gap-2 flex-wrap">
+				<button id="start-btn" class="btn btn-primary">▶ Démarrer</button>
+				<button id="pause-btn" class="btn btn-secondary">⏸ Pause</button>
+				<button id="reset-btn" class="btn btn-accent">🔄 Reset</button>
+				<button id="new-btn" class="btn btn-success">✨ Nouveau</button>
+				<div class="flex items-center gap-2 text-gray-600">
+					<label for="speed" class="text-sm">Vitesse:</label>
+					<input type="range" id="speed" min="1" max="10" value="5" class="w-16">
+				</div>
+			</div>
+		</header>
+
+		<!-- Zone principale avec 3 sections -->
+		<main class="grid grid-cols-1 lg:grid-cols-4 gap-2 mb-2 flex-1">
+			<!-- Section 1: Sélection des algorithmes et explications (1/4) -->
+			<section class="bg-white rounded-lg p-2 shadow-lg">
+				<h2 class="text-base font-semibold mb-2 text-gray-800">Algorithmes de Tri</h2>
+				<div class="grid grid-cols-1 gap-1 mb-2">
+					<button class="algo-btn-compact" data-algo="bubble">
+						<span class="text-lg">🫧</span>
+						<div class="text-left">
+							<strong class="block text-xs">Tri à Bulles</strong>
+						</div>
+					</button>
+					<button class="algo-btn-compact" data-algo="insertion">
+						<span class="text-lg">📝</span>
+						<div class="text-left">
+							<strong class="block text-xs">Tri par Insertion</strong>
+						</div>
+					</button>
+					<button class="algo-btn-compact" data-algo="selection">
+						<span class="text-lg">🎯</span>
+						<div class="text-left">
+							<strong class="block text-xs">Tri par Sélection</strong>
+						</div>
+					</button>
+					<button class="algo-btn-compact" data-algo="quick">
+						<span class="text-lg">⚡</span>
+						<div class="text-left">
+							<strong class="block text-xs">Tri Rapide</strong>
+						</div>
+					</button>
+					<button class="algo-btn-compact" data-algo="merge">
+						<span class="text-lg">🔀</span>
+						<div class="text-left">
+							<strong class="block text-xs">Tri Fusion</strong>
+						</div>
+					</button>
+					<button class="algo-btn-compact" data-algo="heap">
+						<span class="text-lg">🌳</span>
+						<div class="text-left">
+							<strong class="block text-xs">Tri par Tas</strong>
+						</div>
+					</button>
+				</div>
+
+				<!-- Explications didactiques condensées -->
+				<div class="bg-gray-50 rounded-lg p-2">
+					<div id="current-algo-info">
+						<h3 id="algo-title" class="text-primary text-sm font-semibold mb-1">Sélectionnez un algorithme</h3>
+						<div id="algo-description" class="text-gray-600 text-xs mb-1 leading-tight">
+							Choisissez un algorithme de tri pour voir son fonctionnement.
+						</div>
+						<div id="algo-complexity" class="bg-blue-50 p-1 rounded text-xs mb-1 border-l-2 border-secondary"></div>
+						<div id="algo-steps" class="bg-green-50 p-1 rounded text-xs border-l-2 border-primary"></div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Section Pseudo-code (1/4) -->
+			<section class="bg-white rounded-lg p-2 shadow-lg">
+				<h2 class="text-base font-semibold mb-2 text-gray-800">Pseudo-code</h2>
+				<div id="pseudocode-container" class="bg-gray-800 rounded-lg p-2 overflow-auto h-full">
+					<pre id="pseudocode" class="text-gray-300 font-mono text-xs leading-tight m-0"><code>// Sélectionnez un algorithme pour voir son pseudo-code
+// Les lignes seront mises en évidence pendant l'exécution</code></pre>
+				</div>
+			</section>
+
+			<!-- Section Visualisation (2/4) -->
+			<section class="lg:col-span-2 bg-white rounded-lg p-2 shadow-lg flex flex-col">
+				<h2 class="text-base font-semibold mb-2 text-gray-800">Visualisation</h2>
+				<div class="grid grid-cols-3 gap-2 mb-2 bg-gray-50 p-2 rounded-lg">
+					<div class="text-center">
+						<span class="block text-gray-600 text-xs mb-1">Comparaisons:</span>
+						<span id="comparisons" class="block text-lg font-bold text-primary">0</span>
+					</div>
+					<div class="text-center">
+						<span class="block text-gray-600 text-xs mb-1">Échanges:</span>
+						<span id="swaps" class="block text-lg font-bold text-primary">0</span>
+					</div>
+					<div class="text-center">
+						<span class="block text-gray-600 text-xs mb-1">Étapes:</span>
+						<span id="steps" class="block text-lg font-bold text-primary">0</span>
+					</div>
+				</div>
+				<div id="array-container"
+					class="flex-1 flex items-end justify-center gap-1 p-2 h-72 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg relative">
+					<!-- Les barres seront générées dynamiquement -->
+				</div>
+			</section>
+		</main>
+	</div>
+
+	<script src="algorithms.js"></script>
+	<script src="visualizer.js"></script>
+	<script src="app.js"></script>
+</body>
+
+</html>
